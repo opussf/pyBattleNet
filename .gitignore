@@ -1,0 +1,12 @@
+packages/
+build/
+dist/
+*egg-info/
+
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+
+*.pyc

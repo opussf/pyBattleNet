@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyBattleNet"
+version = "0.1.0"
+description = "pyBattleNet is my own lazy developed python BattleNet API module."
+authors = [
+    {name = "Opussf", email = "github@zz9-za.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.14"
+keywords = ["BattleNet", "World of Warcraft"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# Runtime dependencies
+dependencies = []
+
+# Optional dependencies for development
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+# If you have console scripts/entry points
+[project.scripts]
+my-command = "my_project.main:main"
+
+# Package discovery
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pybattlenet*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--cov=pybattlenet",
+    "--cov-report=xml",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "-v"
+]
