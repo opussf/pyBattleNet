@@ -10,33 +10,39 @@ import base64
 
 
 class PyBattleNet():
-	clientID  = ""
-	secret    = ""
+	clientID  = None
+	secret    = None
 	token     = ""
 	secretsFile = "~/.bnet_secrets.json"
 
-	def __init__(self, region: str, logger: logging.Logger | None = None) -> None:
+	def __init__(self, region: str, logger: logging.Logger | None = None,
+				clientID: str | None = None, secret: str | None = None) -> None:
 		self.logger = logger
-		self.__getSecrets()
+		if clientID is not None and secret is not None:
+			self.clientID = clientID
+			self.secret = secret
+		else:
+			self.__getSecrets()
 		if self.clientID is None or self.secret is None:
-			self.__logError("CLINETID and BLSECRET need to set in %s." % (self.secretsFile,))
+			self.__logError(f"CLINETID and BLSECRET need to set in {self.secretsFile}, or passed to the object.")
 			sys.exit(1)
 		# get the access token
 		self.region = region
-		self.request = urllib.request.Request( "https://oauth.battle.net/token" )
-		userpassword = base64.b64encode( (f'{self.clientID}:{self.secret}').encode('ascii') )
-		self.request.add_header( "Authorization", "Basic %s" % userpassword.decode('ascii') )
+		self.request = urllib.request.Request("https://oauth.battle.net/token")
+		userpassword = base64.b64encode((f'{self.clientID}:{self.secret}').encode('ascii'))
+		self.request.add_header("Authorization", "Basic %s" % userpassword.decode('ascii'))
 		self.context = ssl._create_unverified_context()
-		self.request.add_header( "User-Agent", 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36' )
-		data = urllib.parse.urlencode( { 'grant_type': 'client_credentials' } ).encode('utf-8')
+		self.request.add_header("User-Agent",
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36')
+		data = urllib.parse.urlencode({'grant_type': 'client_credentials'}).encode('utf-8')
 		try:
-			result = urllib.request.urlopen( self.request, context=self.context, data=data )
+			result = urllib.request.urlopen(self.request, context=self.context, data=data)
 			if result.status != 200:
 				self.__logError(f"Unexpected status code: {result.status}")
 				sys.exit(result.status)
 			else:
 				tokenJSON = result.read().decode('utf-8')
-				self.access_token = json.loads( tokenJSON )['access_token']
+				self.access_token = json.loads(tokenJSON)['access_token']
 		except urllib.error.HTTPError as e:
 			# This handles HTTP status codes like 404, 500, etc.
 			self.__logError(f"HTTP error: {e.code} - {e.reason}")
@@ -72,13 +78,13 @@ class PyBattleNet():
 			self.__logError(f"Unexpected error: {e}")
 	def __getSecrets(self):
 		secretsFile = os.path.expanduser(self.secretsFile)
-		if not os.path.exists(secretsFile):
-			self.__logError("Figure out what I want to do here. if no secrets file exists.")
-			sys.exit(1)
-		with open(os.path.expanduser(self.secretsFile), "r", encoding="utf-8") as f:
-			secrets = json.loads(f.read())
-		self.clientID = secrets["CLIENTID"]
-		self.secret = secrets["BLSECRET"]
+		if os.path.exists(secretsFile):
+			with open(os.path.expanduser(self.secretsFile), "r", encoding="utf-8") as f:
+				secrets = json.loads(f.read())
+			self.clientID = secrets["CLIENTID"]
+			self.secret = secrets["BLSECRET"]
+		else:
+			self.__logError(f"Set the bnet secrets in {secretsFile} ")
 	def __printMessage(self, msg: str) -> None:
 		print(msg)
 	def __logError(self, msg: str) -> None:
