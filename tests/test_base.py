@@ -165,8 +165,61 @@ class TestBuiltInFunctions:
 
 		assert excinfo.value.code == 1
 
+	@patch('urllib.request.urlopen')
+	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Frank", "BLSECRET": "Shhhh"}')
+	@patch('os.path.exists')
+	@patch('os.path.expanduser')
+	def test_success_getPets(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
+		""" Test that a missing secrets file exits the object """
+		# setup mocks
+		mock_expanduser.return_value = '/home/testuser/.file.json'
+		mock_exists.return_value = True
 
+		mock_response = Mock()
+		mock_response.read.return_value = b'{"access_token": "t0k3n"}'
+		mock_response.status = 200  # This should work
 
+		mock_urlopen.return_value = mock_response
+
+		BN = pybattlenet.PyBattleNet(region="us")
+
+		mock_response = Mock()
+		mock_response.read.return_value = b'{"petInfo": "Bob"}'
+		mock_response.status = 200  # This should work
+
+		mock_urlopen.return_value = mock_response
+
+		pets = BN.getPetIndex()
+
+		assert pets == {"petInfo": "Bob"}
+
+	@patch('urllib.request.urlopen')
+	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Frank", "BLSECRET": "Shhhh"}')
+	@patch('os.path.exists')
+	@patch('os.path.expanduser')
+	def test_success_getToken(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
+		""" Test that a missing secrets file exits the object """
+		# setup mocks
+		mock_expanduser.return_value = '/home/testuser/.file.json'
+		mock_exists.return_value = True
+
+		mock_response = Mock()
+		mock_response.read.return_value = b'{"access_token": "t0k3n"}'
+		mock_response.status = 200  # This should work
+
+		mock_urlopen.return_value = mock_response
+
+		BN = pybattlenet.PyBattleNet(region="us")
+
+		mock_response = Mock()
+		mock_response.read.return_value = b'{"TokenInfo": "Bob"}'
+		mock_response.status = 200  # This should work
+
+		mock_urlopen.return_value = mock_response
+
+		pets = BN.getTokenIndex()
+
+		assert pets == {"TokenInfo": "Bob"}
 
 
 #   @patch('urllib.request.urlopen')
