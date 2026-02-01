@@ -7,6 +7,7 @@ import json
 
 import pybattlenet
 
+
 class TestBuiltInFunctions:
 	"""Test cases involving base functionality"""
 
@@ -20,7 +21,7 @@ class TestBuiltInFunctions:
 		mock_exists.return_value = False
 
 		with pytest.raises(SystemExit) as exc_info:
-			BN = pybattlenet.PyBattleNet(region = "us")
+			BN = pybattlenet.PyBattleNet(region="us")
 
 		# Verify it exited with code 1
 		assert exc_info.value.code == 1
@@ -33,7 +34,7 @@ class TestBuiltInFunctions:
 		mock_exists.return_value = False
 
 		with pytest.raises(SystemExit) as exc_info:
-			BN = pybattlenet.PyBattleNet(region = "us", clientID = "Frank")
+			BN = pybattlenet.PyBattleNet(region="us", clientID="Frank")
 		assert exc_info.value.code == 1
 
 	@patch('os.path.exists')
@@ -44,7 +45,7 @@ class TestBuiltInFunctions:
 		mock_exists.return_value = False
 
 		with pytest.raises(SystemExit) as exc_info:
-			BN = pybattlenet.PyBattleNet(region = "us", secret = "Frank")
+			BN = pybattlenet.PyBattleNet(region="us", secret="Frank")
 		assert exc_info.value.code == 1
 
 	@patch('urllib.request.urlopen')

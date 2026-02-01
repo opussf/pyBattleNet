@@ -55,6 +55,7 @@ class PyBattleNet():
 			# Any other unexpected errors
 			self.__logError(f"Unexpected error: {e}")
 			sys.exit(1)
+
 	def __makeAPIRequest(self, endPoint: str):
 		""" This sets self.request """
 		url = f'https://{self.region}.api.blizzard.com{endPoint}'
@@ -76,6 +77,7 @@ class PyBattleNet():
 		except Exception as e:
 			# Any other unexpected errors
 			self.__logError(f"Unexpected error: {e}")
+
 	def __getSecrets(self):
 		secretsFile = os.path.expanduser(self.secretsFile)
 		if os.path.exists(secretsFile):
@@ -85,20 +87,23 @@ class PyBattleNet():
 			self.secret = secrets["BLSECRET"]
 		else:
 			self.__logError(f"Set the bnet secrets in {secretsFile} ")
+
 	def __printMessage(self, msg: str) -> None:
 		print(msg)
+
 	def __logError(self, msg: str) -> None:
 		if self.logger:
 			self.logger.error(msg)
 		else:
 			self.__printMessage(msg)
 
-	def getPetIndex(self, local: str="en_US") -> dict | None:
+	def getPetIndex(self, local: str = "en_US") -> dict | None:
 		# https://us.api.blizzard.com/data/wow/pet/index?namespace=static-us&locale=en_US
 		result = self.__makeAPIRequest(f'/data/wow/pet/index?namespace=static-{self.region}&locale={local}')
 		if result:
 			return json.loads(result.read().decode('utf-8'))
-	def getTokenIndex(self, local: str="en_US") -> dict | None:
+
+	def getTokenIndex(self, local: str = "en_US") -> dict | None:
 		# https://us.api.blizzard.com/data/wow/token/index?namespace=dynamic-us&locale=en_US
 		result = self.__makeAPIRequest(f'/data/wow/token/index?namespace=dynamic-{self.region}&locale={local}')
 		if result:
