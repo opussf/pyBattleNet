@@ -1,20 +1,24 @@
-import os, sys
+import os
+import sys
 import json
 import logging
-import urllib, urllib.request, urllib.error, ssl
-
+import urllib
+import urllib.request
+import urllib.error
+import ssl
 import base64
-# import ssl, urllib, urllib.request, urllib.error
+
 
 class PyBattleNet():
 	clientID  = ""
 	secret    = ""
 	token     = ""
 	secretsFile = "~/.bnet_secrets.json"
+
 	def __init__(self, region: str, logger: logging.Logger | None = None) -> None:
 		self.logger = logger
 		self.__getSecrets()
-		if self.clientID == None or self.secret == None:
+		if self.clientID is None or self.secret is None:
 			self.__logError("CLINETID and BLSECRET need to set in %s." % (self.secretsFile,))
 			sys.exit(1)
 		# get the access token
