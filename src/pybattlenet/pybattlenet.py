@@ -59,10 +59,10 @@ class PyBattleNet():
 	def __makeAPIRequest(self, endPoint: str):
 		""" This sets self.request """
 		url = f'https://{self.region}.api.blizzard.com{endPoint}'
-		self.request = urllib.request.Request( url )
-		self.request.add_header( "Authorization", "Bearer %s" % self.access_token )
+		self.request = urllib.request.Request(url)
+		self.request.add_header("Authorization", "Bearer %s" % self.access_token)
 		try:
-			result = urllib.request.urlopen( self.request, context=self.context )
+			result = urllib.request.urlopen(self.request, context=self.context)
 			if result.status != 200:
 				self.__logError(f"Unexpected status code: {result.status}")
 				sys.exit(result.status)
@@ -108,4 +108,3 @@ class PyBattleNet():
 		result = self.__makeAPIRequest(f'/data/wow/token/index?namespace=dynamic-{self.region}&locale={local}')
 		if result:
 			return json.loads(result.read().decode('utf-8'))
-

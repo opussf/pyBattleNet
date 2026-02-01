@@ -1,9 +1,5 @@
 import pytest
 from unittest.mock import patch, mock_open, Mock
-import os
-import sys
-import urllib
-import json
 
 import pybattlenet
 
@@ -52,7 +48,7 @@ class TestBuiltInFunctions:
 	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Frank", "BLSECRET": "Shhhh"}')
 	@patch('os.path.exists')
 	@patch('os.path.expanduser')
-	def test_missing_secretsfile_exits(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
+	def test_success_sets_access_token(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
 		""" Test that a missing secrets file exits the object """
 		# setup mocks
 		mock_expanduser.return_value = '/home/testuser/.file.json'
@@ -66,7 +62,7 @@ class TestBuiltInFunctions:
 		mock_urlopen.return_value.__enter__.return_value = mock_response
 		mock_urlopen.return_value.__exit__.return_value = None
 
-		BN = pybattlenet.PyBattleNet(region = "us")
+		BN = pybattlenet.PyBattleNet(region="us")
 		assert BN.access_token == "t0k3n"
 
 
