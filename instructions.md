@@ -22,7 +22,7 @@ PYTHONPATH=packages:src python3 -m pytest
 
 
 
-pip3 install build --target=./packages
+pip3 install build --target=./packages --upgrade
 PYTHONPATH=packages python3 -m build --sdist --wheel
 
 

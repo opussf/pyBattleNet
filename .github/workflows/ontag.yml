@@ -39,7 +39,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "./dist/*.tar.gz"
-          bodyFile: target/working/changelog.txt
+          bodyFile: README.md
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
