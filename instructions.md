@@ -25,3 +25,6 @@ PYTHONPATH=packages:src python3 -m pytest
 pip3 install build --target=./packages
 PYTHONPATH=packages python3 -m build --sdist --wheel
 
+
+pip3 install flake8 --target=./packages
+PYTHONPATH=packages python3 -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

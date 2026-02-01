@@ -79,7 +79,7 @@ class PyBattleNet():
 		print(msg)
 	def __logError(self, msg: str) -> None:
 		if self.logger:
-			logger.error(msg)
+			self.logger.error(msg)
 		else:
 			self.__printMessage(msg)
 
