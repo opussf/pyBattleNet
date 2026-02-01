@@ -15,7 +15,7 @@ pytest --cov=pybattlenet --cov-report=html --cov-report=term
 # Show missing line numbers in terminal
 pytest --cov=pybattlenet --cov-report=term-missing
 
-pip3 install -e . --target=./packages
+pip3 install -e . --target=./packages --upgrade
 
 PYTHONPATH=packages python3 -m pytest --cov=pybattlenet --cov-report=xml:cobertura.xml --cov-report=html  --cov-report=term-missing -v
 PYTHONPATH=packages:src python3 -m pytest
