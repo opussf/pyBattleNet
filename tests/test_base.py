@@ -155,10 +155,8 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.return_value = mock_response
 
-		with pytest.raises(SystemExit) as excinfo:
+		with pytest.raises(RuntimeError):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
-
-		assert excinfo.value.code == 207
 
 	@patch('urllib.request.urlopen')
 	@patch('builtins.open', new_callable=mock_open, read_data='')
@@ -180,10 +178,8 @@ class TestBuiltInFunctions:
 		)
 		mock_urlopen.side_effect = http_error
 
-		with pytest.raises(SystemExit) as excinfo:
+		with pytest.raises(urllib.error.HTTPError):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
-
-		assert excinfo.value.code == 1
 
 	@patch('urllib.request.urlopen')
 	@patch('builtins.open', new_callable=mock_open, read_data='')
@@ -199,10 +195,8 @@ class TestBuiltInFunctions:
 		url_error = urllib.error.URLError("Connection refused")
 		mock_urlopen.side_effect = url_error
 
-		with pytest.raises(SystemExit) as excinfo:
+		with pytest.raises(urllib.error.URLError):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
-
-		assert excinfo.value.code == 1
 
 	@patch('urllib.request.urlopen')
 	@patch('builtins.open', new_callable=mock_open, read_data='')
@@ -216,10 +210,8 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.side_effect = Exception("Boom")
 
-		with pytest.raises(SystemExit) as excinfo:
+		with pytest.raises(Exception):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
-
-		assert excinfo.value.code == 1
 
 	@patch('urllib.request.urlopen')
 	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Frank", "BLSECRET": "Shhhh"}')
