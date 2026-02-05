@@ -93,7 +93,7 @@ class PyBattleNet():
 					self.clientID = secrets["CLIENTID"]
 					self.secret = secrets["BLSECRET"]
 				except KeyError as ke:
-					raise EnvironmentError(f"Missing required configuration key: {ke.args[0]}")
+					raise EnvironmentError(f"Missing required configuration key: {ke.args[0]}") from ke
 
 		if not self.clientID or not self.secret:
 			self.__logError("CLIENTID or BLSECRET are not set.")
