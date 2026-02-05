@@ -18,14 +18,8 @@ class PyBattleNet():
 	def __init__(self, region: str, logger: logging.Logger | None = None,
 				clientID: str | None = None, secret: str | None = None) -> None:
 		self.logger = logger
-		if clientID is not None and secret is not None:
-			self.clientID = clientID
-			self.secret = secret
-		else:
-			self.__getSecrets()
-		if self.clientID is None or self.secret is None:
-			self.__logError(f"CLINETID and BLSECRET need to set in {self.secretsFile}, or passed to the object.")
-			sys.exit(1)
+		self.__set_secrets(clientID, secret)
+
 		# get the access token
 		self.region = region
 		self.request = urllib.request.Request("https://oauth.battle.net/token")
@@ -78,15 +72,30 @@ class PyBattleNet():
 			# Any other unexpected errors
 			self.__logError(f"Unexpected error: {e}")
 
-	def __getSecrets(self):
-		secretsFile = os.path.expanduser(self.secretsFile)
-		if os.path.exists(secretsFile):
-			with open(os.path.expanduser(self.secretsFile), "r", encoding="utf-8") as f:
-				secrets = json.loads(f.read())
-			self.clientID = secrets["CLIENTID"]
-			self.secret = secrets["BLSECRET"]
-		else:
-			self.__logError(f"Set the bnet secrets in {secretsFile} ")
+	def __set_secrets(self, clientID: str | None = None, secret: str | None = None):
+		""" This sets the required secrets needed to access bnet API services.
+		The secrets are attempted to be retrieved in order of:
+		passed to object, environment, self.secretsFile
+		This is a good place to throw an exception (not exit), if they cannot be set."""
+		self.clientID = clientID
+		self.secret = secret
+
+		if not self.clientID or not self.secret:
+			self.clientID = os.environ.get("CLIENTID")
+			self.secret = os.environ.get("BLSECRET")
+
+		if not self.clientID or not self.secret:
+			secretsFile = os.path.expanduser(self.secretsFile)
+			if os.path.exists(secretsFile):
+				with open(os.path.expanduser(self.secretsFile), "r", encoding="utf-8") as f:
+					secrets = json.loads(f.read())
+				self.clientID = secrets["CLIENTID"]
+				self.secret = secrets["BLSECRET"]
+
+		if not self.clientID or not self.secret:
+			self.__logError("CLIENTID or BLSECRET are not set.")
+			self.__logError(f"Create {secretsFile}, set them in the environment, or pass them to the object.")
+			raise EnvironmentError("CLIENTID or BLSECRET are not set")
 
 	def __printMessage(self, msg: str) -> None:
 		print(msg)
