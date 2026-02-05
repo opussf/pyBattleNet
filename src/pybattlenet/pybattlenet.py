@@ -33,11 +33,11 @@ class PyBattleNet():
 		except urllib.error.HTTPError as e:
 			# This handles HTTP status codes like 404, 500, etc.
 			self.__logError(f"HTTP error: {e.code} - {e.reason}")
-			raise(e)
+			raise e
 		except urllib.error.URLError as e:
 			# This handles connection errors, DNS errors, etc.
 			self.__logError(f"URL error: {e.reason}")
-			raise(e)
+			raise e
 		except Exception as e:
 			# Any other unexpected errors
 			self.__logError(f"Unexpected error: {e}")
