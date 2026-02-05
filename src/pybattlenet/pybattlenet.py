@@ -89,8 +89,11 @@ class PyBattleNet():
 			if os.path.exists(secretsFile):
 				with open(os.path.expanduser(self.secretsFile), "r", encoding="utf-8") as f:
 					secrets = json.loads(f.read())
-				self.clientID = secrets["CLIENTID"]
-				self.secret = secrets["BLSECRET"]
+				try:
+					self.clientID = secrets["CLIENTID"]
+					self.secret = secrets["BLSECRET"]
+				except KeyError as ke:
+					raise EnvironmentError(f"Missing required configuration key: {ke.args[0]}")
 
 		if not self.clientID or not self.secret:
 			self.__logError("CLIENTID or BLSECRET are not set.")

@@ -101,29 +101,12 @@ class TestBuiltInFunctions:
 		assert BN.clientID == "environCI"
 		assert BN.secret == "environSecret"
 
-
-	"""("CLIENTID")
-	secret    = os.environ.get("BLSECRET")"""
-
-
-
-	@patch('os.path.exists')
-	@patch('os.path.expanduser')
-	def test_missing_passedclinetID_exits(self, mock_expanduser, mock_exists):
-		# setup mocks
-		mock_expanduser.return_value = '/home/testuser/.file.json'
-		mock_exists.return_value = False
-
-		with pytest.raises(SystemExit) as exc_info:
-			pybattlenet.PyBattleNet(region="us", secret="Frank")
-		assert exc_info.value.code == 1
-
 	@patch('urllib.request.urlopen')
-	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Frank", "BLSECRET": "Shhhh"}')
+	@patch('builtins.open', new_callable=mock_open, read_data='{"CLIENTID": "Sammy"}')
 	@patch('os.path.exists')
 	@patch('os.path.expanduser')
-	def test_success_sets_access_token_fromFile(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
-		""" Test that a missing secrets file exits the object """
+	def test_secrests_file_noenvironment_notpasses_clientID_raises_exception(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
+		""" Test that a missing secret in file raises exception """
 		# setup mocks
 		mock_expanduser.return_value = '/home/testuser/.file.json'
 		mock_exists.return_value = True
@@ -134,18 +117,18 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.return_value = mock_response
 
-		BN = pybattlenet.PyBattleNet(region="us")
-		assert BN.access_token == "t0k3n"
+		with pytest.raises(EnvironmentError):
+			pybattlenet.PyBattleNet(region="us")
 
 	@patch('urllib.request.urlopen')
-	@patch('builtins.open', new_callable=mock_open, read_data='')
+	@patch('builtins.open', new_callable=mock_open, read_data='{"SECRET": "FILESECRET"}')
 	@patch('os.path.exists')
 	@patch('os.path.expanduser')
-	def test_success_sets_access_token_passed(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
-		""" Test that a missing secrets file exits the object """
+	def test_secrests_file_noenvironment_notpasses_secret_raises_exception(self, mock_expanduser, mock_exists, mock_file, mock_urlopen):
+		""" Test that a missing secret in file raises exception """
 		# setup mocks
 		mock_expanduser.return_value = '/home/testuser/.file.json'
-		mock_exists.return_value = False
+		mock_exists.return_value = True
 
 		mock_response = Mock()
 		mock_response.read.return_value = b'{"access_token": "t0k3n"}'
@@ -153,8 +136,8 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.return_value = mock_response
 
-		BN = pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
-		assert BN.access_token == "t0k3n"
+		with pytest.raises(EnvironmentError):
+			pybattlenet.PyBattleNet(region="us")
 
 	@patch('urllib.request.urlopen')
 	@patch('builtins.open', new_callable=mock_open, read_data='')
