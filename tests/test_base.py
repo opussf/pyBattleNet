@@ -155,7 +155,7 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.return_value = mock_response
 
-		with pytest.raises(RuntimeError) as excinfo:
+		with pytest.raises(RuntimeError):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
 
 	@patch('urllib.request.urlopen')
@@ -195,7 +195,7 @@ class TestBuiltInFunctions:
 		url_error = urllib.error.URLError("Connection refused")
 		mock_urlopen.side_effect = url_error
 
-		with pytest.raises(urllib.error.URLError) as excinfo:
+		with pytest.raises(urllib.error.URLError):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
 
 	@patch('urllib.request.urlopen')
@@ -210,7 +210,7 @@ class TestBuiltInFunctions:
 
 		mock_urlopen.side_effect = Exception("Boom")
 
-		with pytest.raises(Exception) as excinfo:
+		with pytest.raises(Exception):
 			pybattlenet.PyBattleNet(region="us", clientID="Frank", secret="Shhh")
 
 	@patch('urllib.request.urlopen')
